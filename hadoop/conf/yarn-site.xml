@@ -52,6 +52,7 @@
 	<value>zoo1.zookeeper:2181,zoo2.zookeeper:2181,zoo3.zookeeper:2181</value>
 </property>
 <!-- rm1 -->
+<!--
 <property>
 	<name>yarn.resourcemanager.address.rm1</name>
 	<value>${yarn.resourcemanager.hostname.rm1}:23140</value>
@@ -76,7 +77,9 @@
 	<name>yarn.resourcemanager.admin.address.rm1</name>
 	<value>${yarn.resourcemanager.hostname.rm1}:23141</value>
 </property>
+-->
 <!-- rm2 -->
+<!--
 <property>
 	<name>yarn.resourcemanager.address.rm2</name>
 	<value>${yarn.resourcemanager.hostname.rm2}:23140</value>
@@ -101,6 +104,7 @@
 	<name>yarn.resourcemanager.admin.address.rm2</name>
 	<value>${yarn.resourcemanager.hostname.rm2}:23141</value>
 </property>
+-->
 <!-- logs -->
 <property>
 	<name>yarn.nodemanager.local-dirs</name>

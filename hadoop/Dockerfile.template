@@ -1,0 +1,18 @@
+FROM ssh-ubuntu
+
+#ADD soft/jdk-8u112-linux-x64.tar.gz /usr/local
+RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /root/.bashrc
+
+ADD soft/hadoop-$HADOOP_VERSION.tar.gz /usr/local
+RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /root/.bashrc
+
+RUN echo "PATH=\"\$JAVA_HOME/bin:\$HADOOP_HOME/sbin:\$HADOOP_HOME/bin:\$PATH\"" >> /root/.bashrc
+
+RUN mv /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh.bak
+RUN sed 's|${JAVA_HOME}|"/usr/local/jdk"|g' /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh.bak > /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh
+
+COPY conf/core-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY conf/hdfs-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY conf/mapred-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY conf/slaves /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY conf/yarn-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop

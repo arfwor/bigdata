@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+XHOME=$(cd "$(dirname "$0")"; pwd)
+
+. "$XHOME"/../config/setenv.sh
+
+docker run\
+	-h zoo$ZID.zookeeper\
+	-v "$JAVA_HOME":"/usr/local/jdk"\
+	$DOCKER_ADD_HOST\
+	-it zoo$ZID

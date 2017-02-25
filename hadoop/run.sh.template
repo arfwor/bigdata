@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+XHOME=$(cd "$(dirname "$0")"; pwd)
+
+. "$XHOME"/../config/setenv.sh
+
+docker run\
+	-h $HID.hadoop\
+	-p "$NN1_PORT":"$NN1_PORT"\
+	-p "$RN1_PORT":"$RN1_PORT"\
+	-v "$JAVA_HOME":"/usr/local/jdk"\
+	$DOCKER_ADD_HOST\
+	-it hadoop

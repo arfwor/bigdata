@@ -2,7 +2,7 @@
 
 XHOME=$(cd "$(dirname "$0")"; pwd)
 
-. "$XHOME"/../config/setenv.sh
+. "$XHOME"/../conf/setenv.sh
 
 docker run\
 	-h $HID.hadoop\

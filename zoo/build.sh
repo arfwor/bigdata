@@ -4,7 +4,7 @@ XHOME=$(cd "$(dirname "$0")"; pwd)
 
 cd $XHOME
 
-. "$XHOME"/../config/setenv.sh
+. "$XHOME"/../conf/setenv.sh
 
 rm -rf soft
 mkdir soft

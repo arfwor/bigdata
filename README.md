@@ -5,7 +5,7 @@ http://tech.meituan.com/spark-tuning-basic.html
 
 sh basic/build.sh
 sh ssh/build.sh
-sh zookeeper/build.sh
+sh zoo/build.sh
 sh hadoop/build.sh
 
 sh bin/run-zoo1.sh -> sh /root/run.sh

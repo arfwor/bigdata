@@ -27,31 +27,31 @@
 	</property>
 	<property>
 		<name>dfs.namenode.rpc-address.hdfscluster.nn1</name>
-		<value>name1.hadoop:9000</value>
+		<value>master1.hadoop:9000</value>
 	</property>
 	<property>
 		<name>dfs.namenode.rpc-address.hdfscluster.nn2</name>
-		<value>name2.hadoop:9000</value>
+		<value>master2.hadoop:9000</value>
 	</property>
 	<property>
 		<name>dfs.namenode.http-address.hdfscluster.nn1</name>
-		<value>name1.hadoop:50070</value>
+		<value>master1.hadoop:50070</value>
 	</property>
 	<property>
 		<name>dfs.namenode.http-address.hdfscluster.nn2</name>
-		<value>name2.hadoop:50070</value>
+		<value>master2.hadoop:50070</value>
 	</property>
 	<property>
 		<name>dfs.namenode.servicerpc-address.hdfscluster.nn1</name>
-		<value>name1.hadoop:53310</value>
+		<value>master1.hadoop:53310</value>
 	</property>
 	<property>
 		<name>dfs.namenode.servicerpc-address.hdfscluster.nn2</name>
-		<value>name2.hadoop:53310</value>
+		<value>master2.hadoop:53310</value>
 	</property>
 	<property>
 		<name>dfs.namenode.shared.edits.dir</name>
-		<value>qjournal://journal.hadoop:8485;name1.hadoop:8485;name2.hadoop:8485/hdfscluster</value>
+		<value>qjournal://journal.hadoop:8485;master1.hadoop:8485;master2.hadoop:8485/hdfscluster</value>
 	</property>
 	<property>
 		<name>dfs.journalnode.edits.dir</name>

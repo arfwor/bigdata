@@ -20,10 +20,10 @@ do
 	sed 's/$ZOO_VERSION/'$ZOO_VERSION'/g' Dockerfile.temp > Dockerfile
 	sed 's/$ZID/'$i'/g' run.sh.template > ../bin/run-zoo$i.sh
 	docker build -t "zoo$i:latest" .
+	rm Dockerfile.temp
+	rm -rf Dockerfile
 done
 
-chmod +x ../bin/*.sh
-
-rm Dockerfile.temp
-rm -rf Dockerfile
 rm -rf soft
+
+chmod +x ../bin/*.sh

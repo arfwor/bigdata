@@ -1,4 +1,4 @@
-FROM ssh-ubuntu
+FROM ssh-hadoop
 
 #ADD soft/jdk-8u112-linux-x64.tar.gz /usr/local
 RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /root/.bashrc
@@ -10,12 +10,11 @@ RUN echo "PATH=\"\$JAVA_HOME/bin:\$ZOOKEEPER_HOME/bin:\$PATH\"" >> /root/.bashrc
 
 RUN cp /usr/local/zookeeper-$ZOO_VERSION/conf/zoo_sample.cfg /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
 
-RUN mkdir -p /tmp/zookeeper
-RUN echo "$ZID" >> /tmp/zookeeper/myid
+RUN mkdir -p /tmp/zookeeper && echo "$ZID" >> /tmp/zookeeper/myid
 
-RUN echo "server.1=zoo1.zookeeper:2888:3888" >> /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
-RUN echo "server.2=zoo2.zookeeper:2888:3888" >> /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
-RUN echo "server.3=zoo3.zookeeper:2888:3888" >> /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
+RUN echo "server.1=zoo1.hadoop:2888:3888" >> /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
+RUN echo "server.2=zoo2.hadoop:2888:3888" >> /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
+RUN echo "server.3=zoo3.hadoop:2888:3888" >> /usr/local/zookeeper-$ZOO_VERSION/conf/zoo.cfg
 
 RUN echo "zkServer.sh start && tail -f zookeeper.out" > /root/run.sh
 RUN chmod +x /root/run.sh

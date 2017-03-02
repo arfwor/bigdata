@@ -1,4 +1,4 @@
-FROM basic-ubuntu
+FROM basic-hadoop
 
 RUN apt -y install ssh
 RUN echo "/usr/sbin/sshd" >> /root/.bashrc

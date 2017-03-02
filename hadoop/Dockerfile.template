@@ -1,4 +1,4 @@
-FROM ssh-ubuntu
+FROM ssh-hadoop
 
 #ADD soft/jdk-8u112-linux-x64.tar.gz /usr/local
 RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /root/.bashrc
@@ -9,7 +9,12 @@ RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /root/.ba
 ADD soft/hbase-$HBASE_VERSION-bin.tar.gz /usr/local
 RUN echo "export HBASE_HOME=\"/usr/local/hbase-$HBASE_VERSION\"" >> /root/.bashrc
 
-RUN echo "PATH=\"\$JAVA_HOME/bin:\$HADOOP_HOME/sbin:\$HADOOP_HOME/bin:\$HBASE_HOME/bin:\$PATH\"" >> /root/.bashrc
+ADD soft/apache-hive-$HIVE_VERSION-bin.tar.gz /usr/local
+RUN mv /usr/local/apache-hive-$HIVE_VERSION-bin /usr/local/hive-$HIVE_VERSION
+RUN echo "export HIVE_HOME=\"/usr/local/hive-$HIVE_VERSION\"" >> /root/.bashrc
+COPY soft/postgresql-9.4.1212.jar /usr/local/hive-$HIVE_VERSION/lib
+
+RUN echo "PATH=\"\$JAVA_HOME/bin:\$HADOOP_HOME/sbin:\$HADOOP_HOME/bin:\$HBASE_HOME/bin:\$HIVE_HOME/bin:\$PATH\"" >> /root/.bashrc
 
 # hadoop-env.sh
 RUN mv /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh.bak
@@ -19,6 +24,11 @@ RUN sed 's|${JAVA_HOME}|"/usr/local/jdk"|g' /usr/local/hadoop-$HADOOP_VERSION/et
 RUN sed 's|# export JAVA_HOME=/usr/java/jdk1.6.0/|export JAVA_HOME="/usr/local/jdk"|g' /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh > /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh.temp1
 RUN sed 's|# export HBASE_MANAGES_ZK=true|export HBASE_MANAGES_ZK=false|g' /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh.temp1 > /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh
 RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh
+
+# hive-env.sh
+RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /usr/local/hive-$HIVE_VERSION/conf/hive-env.sh
+RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /usr/local/hive-$HIVE_VERSION/conf/hive-env.sh
+RUN echo "export HIVE_HOME=\"/usr/local/hive-$HIVE_VERSION\"" >> /usr/local/hive-$HIVE_VERSION/conf/hive-env.sh
 
 # hadoop/conf
 COPY conf/core-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
@@ -33,3 +43,6 @@ COPY conf/regionservers /usr/local/hbase-$HBASE_VERSION/conf
 COPY conf/backup-masters /usr/local/hbase-$HBASE_VERSION/conf
 #COPY conf/core-site.xml /usr/local/hbase-$HBASE_VERSION/conf
 #COPY conf/hdfs-site.xml /usr/local/hbase-$HBASE_VERSION/conf
+
+# hive/conf
+COPY conf/hive-site.xml /usr/local/hive-$HIVE_VERSION/conf

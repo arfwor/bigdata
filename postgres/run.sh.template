@@ -5,7 +5,6 @@ XHOME=$(cd "$(dirname "$0")"; pwd)
 . "$XHOME"/../conf/setenv.sh
 
 docker run\
-	-h zoo$ZID.hadoop\
-	-v "$JAVA_HOME":"/usr/local/jdk"\
+	-h postgres.hadoop\
 	$DOCKER_ADD_HOST\
-	-it zoo$ZID-hadoop
+	-it postgres-hadoop

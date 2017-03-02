@@ -11,4 +11,4 @@ docker run\
 	-p "$HM1_PORT":"$HM1_PORT"\
 	-v "$JAVA_HOME":"/usr/local/jdk"\
 	$DOCKER_ADD_HOST\
-	-it hadoop
+	-it main-hadoop

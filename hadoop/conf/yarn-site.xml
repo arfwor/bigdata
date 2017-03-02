@@ -49,7 +49,7 @@
 </property>
 <property>
 	<name>yarn.resourcemanager.zk-address</name>
-	<value>zoo1.zookeeper:2181,zoo2.zookeeper:2181,zoo3.zookeeper:2181</value>
+	<value>zoo1.hadoop:2181,zoo2.hadoop:2181,zoo3.hadoop:2181</value>
 </property>
 <!-- rm1 -->
 <!--

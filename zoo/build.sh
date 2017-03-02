@@ -19,7 +19,7 @@ do
 	sed 's/$ZID/'$i'/g' Dockerfile.template > Dockerfile.temp
 	sed 's/$ZOO_VERSION/'$ZOO_VERSION'/g' Dockerfile.temp > Dockerfile
 	sed 's/$ZID/'$i'/g' run.sh.template > ../bin/run-zoo$i.sh
-	docker build -t "zoo$i:latest" .
+	docker build -t "zoo$i-hadoop:latest" .
 	rm Dockerfile.temp
 	rm -rf Dockerfile
 done

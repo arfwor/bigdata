@@ -11,11 +11,16 @@ mkdir soft
 #cp $SOFT_DIR/jdk-8u112-linux-x64.tar.gz soft
 cp $SOFT_DIR/hadoop-$HADOOP_VERSION.tar.gz soft
 cp $SOFT_DIR/hbase-$HBASE_VERSION-bin.tar.gz soft
+cp $SOFT_DIR/apache-hive-$HIVE_VERSION-bin.tar.gz soft
+cp $SOFT_DIR/postgresql-9.4.1212.jar soft
+# wget http://central.maven.org/maven2/org/postgresql/postgresql/9.4.1212/postgresql-9.4.1212.jar -O soft/postgresql-9.4.1212.jar
 
 sed 's/$HADOOP_VERSION/'$HADOOP_VERSION'/g' Dockerfile.template > Dockerfile.temp1
-sed 's/$HBASE_VERSION/'$HBASE_VERSION'/g' Dockerfile.temp1 > Dockerfile
-docker build -t "hadoop:latest" .
+sed 's/$HBASE_VERSION/'$HBASE_VERSION'/g' Dockerfile.temp1 > Dockerfile.temp2
+sed 's/$HIVE_VERSION/'$HIVE_VERSION'/g' Dockerfile.temp2 > Dockerfile
+docker build -t "main-hadoop:latest" .
 rm Dockerfile.temp1
+rm Dockerfile.temp2
 rm Dockerfile
 
 rm -rf soft

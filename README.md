@@ -1,10 +1,3 @@
-# 参考资料
-* https://my.oschina.net/u/204498/blog/639986
-* http://blog.csdn.net/carl810224/article/details/52174412
-* http://abloz.com/hbase/book.html
-* http://www.tuicool.com/articles/iUBJJj3
-* http://www.powerxing.com/install-hadoop-cluster/
-
 # 按顺序执行下边命令
 
 # build docker images
@@ -99,4 +92,12 @@
 * http://127.0.0.1:50070
 * http://127.0.0.1:8088
 * http://127.0.0.1:16010
+
+
+# 参考资料
+* https://my.oschina.net/u/204498/blog/639986
+* http://blog.csdn.net/carl810224/article/details/52174412
+* http://abloz.com/hbase/book.html
+* http://www.tuicool.com/articles/iUBJJj3
+* http://www.powerxing.com/install-hadoop-cluster/
 

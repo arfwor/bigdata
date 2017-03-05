@@ -13,8 +13,14 @@
 * ./bin/run-zoo3.sh
 * ./bin/run-postgres.sh
 * ./bin/run-journal.sh
-* ./bin/run-master1.sh
-* ./bin/run-master2.sh
+* ./bin/run-name1.sh
+* ./bin/run-name2.sh
+* ./bin/run-hbase1.sh
+* ./bin/run-hbase2.sh
+* ./bin/run-hive1.sh
+* ./bin/run-hive2.sh
+* ./bin/run-spark1.sh
+* ./bin/run-spark2.sh
 * ./bin/run-data1.sh
 * ./bin/run-data2.sh
 * ./bin/run-data3.sh
@@ -35,63 +41,84 @@
 * root@postgres:~# /etc/init.d/postgresql restart
 
 # hdfs zkfc format
-* root@master1:~# hdfs zkfc -formatZK
+* root@name1:~# hdfs zkfc -formatZK
 
 # startup journalnode
 * root@journal:~# hadoop-daemon.sh start journalnode
-* root@master1:~# hadoop-daemon.sh start journalnode
-* root@master2:~# hadoop-daemon.sh start journalnode
+* root@name1:~# hadoop-daemon.sh start journalnode
+* root@name2:~# hadoop-daemon.sh start journalnode
 
 # startup namenode
-* root@master1:~# hdfs namenode -format hdfscluster
-* root@master1:~# hadoop-daemon.sh start namenode
+* root@name1:~# hdfs namenode -format hdfscluster
+* root@name1:~# hadoop-daemon.sh start namenode
 
 # startup standby namenode
-* root@master2:~# hdfs namenode -bootstrapStandby
-* root@master2:~# hadoop-daemon.sh start namenode
+* root@name2:~# hdfs namenode -bootstrapStandby
+* root@name2:~# hadoop-daemon.sh start namenode
 
 # startup zkfc
-* root@master1:~# hadoop-daemon.sh start zkfc
-* root@master2:~# hadoop-daemon.sh start zkfc
+* root@name1:~# hadoop-daemon.sh start zkfc
+* root@name2:~# hadoop-daemon.sh start zkfc
 
 # 测试 namenode HA
-* root@master1:~# hdfs haadmin -getServiceState nn1
-
-# 预先 ssh 一次所有集群节点
-* root@master1:~# ssh master2.hadoop && ssh journal.hadoop && ssh zoo1.hadoop && ssh zoo2.hadoop && ssh zoo3.hadoop && ssh data1.hadoop && ssh data2.hadoop && ssh data3.hadoop
-* root@master2:~# ssh master1.hadoop && ssh journal.hadoop && ssh zoo1.hadoop && ssh zoo2.hadoop && ssh zoo3.hadoop && ssh data1.hadoop && ssh data2.hadoop && ssh data3.hadoop
+* root@name1:~# hdfs haadmin -getServiceState nn1
 
 # startup datanode
-* root@master1:~# hadoop-daemons.sh start datanode
+* root@name1:~# hadoop-daemons.sh start datanode
 
 # startup yarn
-* root@master1:~# start-yarn.sh
+* root@name1:~# start-yarn.sh
 
 # startup resourcemanager
-* root@master2:~# yarn-daemon.sh start resourcemanager
+* root@name2:~# yarn-daemon.sh start resourcemanager
 
 # 测试 resourcemanager HA
-* root@master1:~# yarn rmadmin -getServiceState rm1
+* root@name1:~# yarn rmadmin -getServiceState rm1
 
 # startup hbase
-* root@master1:~# start-hbase.sh
+* root@hbase1:~# start-hbase.sh
 
 # init hive metastore
-* root@master1:~# schematool -dbType postgres -initSchema
+* root@hive1:~# schematool -dbType postgres -initSchema
 
-# startup hiveserver2
-* root@master1:~# hiveserver2 &
-* root@master2:~# hiveserver2 &
+# startup hiveserver2: Starting Web UI on port 10002
+* root@hive1:~# hiveserver2 &
+* root@hive2:~# hiveserver2 &
 
 # 测试 hiveserver2 HA 方式连接
-* root@journal:~# beeline
-* !connect jdbc:hive2://zoo1.hadoop:2181,zoo2.hadoop:2181,zoo3.hadoop:2181/;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2 hive "hive"
+* root@journal:~# beeline -u "jdbc:hive2://zoo1.hadoop:2181,zoo2.hadoop:2181,zoo3.hadoop:2181/;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2" hive "hive"
 
+# shutdown hiveserver2
+* root@hive1:~# ps -ef|grep RunJar|awk {'print $2'}|xargs kill -9
+* root@hive2:~# ps -ef|grep RunJar|awk {'print $2'}|xargs kill -9
+
+# startup hive metastore
+* root@hive1:~# hive --service metastore &
+* root@hive2:~# hive --service metastore &
+
+# startup spark
+* root@name1:~# hadoop fs -mkdir -p /spark/event/logs
+* root@name1:~# hadoop fs -mkdir -p /spark/history/logs
+* root@spark1:~# start-master.sh
+* root@spark2:~# start-master.sh
+* root@spark1:~# start-slaves.sh
+* root@spark1:~# start-thriftserver.sh
+* root@spark1:~# start-history-server.sh
+
+# 测试 thriftserver
+* root@journal:~# beeline -u "jdbc:hive2://spark1.hadoop:10000"
+
+# hdfs
+* root@journal:~# hadoop dfs -ls /
 
 # web 界面
 * http://127.0.0.1:50070
 * http://127.0.0.1:8088
 * http://127.0.0.1:16010
+* http://127.0.0.1:8080
+* http://127.0.0.1:4040
+* http://127.0.0.1:18080
+* http://127.0.0.1:8081
 
 
 # 参考资料
@@ -100,4 +127,3 @@
 * http://abloz.com/hbase/book.html
 * http://www.tuicool.com/articles/iUBJJj3
 * http://www.powerxing.com/install-hadoop-cluster/
-

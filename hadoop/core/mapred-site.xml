@@ -23,10 +23,10 @@
 	</property>
 	<property>
 		<name>mapreduce.jobhistory.address</name>
-		<value>master1.hadoop:10020,master2.hadoop:10020</value>
+		<value>name1.hadoop:10020,name2.hadoop:10020</value>
 	</property>
 	<property>
 		<name>mapreduce.jobhistory.webapp.address</name>
-		<value>master1.hadoop:19888,master2.hadoop:19888</value>
+		<value>name1.hadoop:19888,name2.hadoop:19888</value>
 	</property>
 </configuration>

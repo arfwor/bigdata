@@ -2,47 +2,65 @@ FROM ssh-hadoop
 
 #ADD soft/jdk-8u112-linux-x64.tar.gz /usr/local
 RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /root/.bashrc
+RUN echo "export SCALA_HOME=\"/usr/local/scala\"" >> /root/.bashrc
 
+# hadoop
 ADD soft/hadoop-$HADOOP_VERSION.tar.gz /usr/local
 RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /root/.bashrc
-
-ADD soft/hbase-$HBASE_VERSION-bin.tar.gz /usr/local
-RUN echo "export HBASE_HOME=\"/usr/local/hbase-$HBASE_VERSION\"" >> /root/.bashrc
-
-ADD soft/apache-hive-$HIVE_VERSION-bin.tar.gz /usr/local
-RUN mv /usr/local/apache-hive-$HIVE_VERSION-bin /usr/local/hive-$HIVE_VERSION
-RUN echo "export HIVE_HOME=\"/usr/local/hive-$HIVE_VERSION\"" >> /root/.bashrc
-COPY soft/postgresql-9.4.1212.jar /usr/local/hive-$HIVE_VERSION/lib
-
-RUN echo "PATH=\"\$JAVA_HOME/bin:\$HADOOP_HOME/sbin:\$HADOOP_HOME/bin:\$HBASE_HOME/bin:\$HIVE_HOME/bin:\$PATH\"" >> /root/.bashrc
-
 # hadoop-env.sh
 RUN mv /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh.bak
 RUN sed 's|${JAVA_HOME}|"/usr/local/jdk"|g' /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh.bak > /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop/hadoop-env.sh
+# hadoop/conf
+COPY core/core-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY core/hdfs-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY core/mapred-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY core/slaves /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
+COPY core/yarn-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
 
+# hbase
+ADD soft/hbase-$HBASE_VERSION-bin.tar.gz /usr/local
+RUN echo "export HBASE_HOME=\"/usr/local/hbase-$HBASE_VERSION\"" >> /root/.bashrc
 # hbase-env.sh
 RUN sed 's|# export JAVA_HOME=/usr/java/jdk1.6.0/|export JAVA_HOME="/usr/local/jdk"|g' /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh > /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh.temp1
 RUN sed 's|# export HBASE_MANAGES_ZK=true|export HBASE_MANAGES_ZK=false|g' /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh.temp1 > /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh
 RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /usr/local/hbase-$HBASE_VERSION/conf/hbase-env.sh
+# hbase/conf
+COPY hbase/hbase-site.xml /usr/local/hbase-$HBASE_VERSION/conf
+COPY hbase/regionservers /usr/local/hbase-$HBASE_VERSION/conf
+COPY hbase/backup-masters /usr/local/hbase-$HBASE_VERSION/conf
+#COPY hbase/core-site.xml /usr/local/hbase-$HBASE_VERSION/conf
+#COPY hbase/hdfs-site.xml /usr/local/hbase-$HBASE_VERSION/conf
 
+# hive
+ADD soft/apache-hive-$HIVE_VERSION-bin.tar.gz /usr/local
+RUN mv /usr/local/apache-hive-$HIVE_VERSION-bin /usr/local/hive-$HIVE_VERSION
+COPY soft/postgresql-9.4.1212.jar /usr/local/hive-$HIVE_VERSION/lib
+RUN echo "export HIVE_HOME=\"/usr/local/hive-$HIVE_VERSION\"" >> /root/.bashrc
 # hive-env.sh
 RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /usr/local/hive-$HIVE_VERSION/conf/hive-env.sh
 RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /usr/local/hive-$HIVE_VERSION/conf/hive-env.sh
 RUN echo "export HIVE_HOME=\"/usr/local/hive-$HIVE_VERSION\"" >> /usr/local/hive-$HIVE_VERSION/conf/hive-env.sh
-
-# hadoop/conf
-COPY conf/core-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
-COPY conf/hdfs-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
-COPY conf/mapred-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
-COPY conf/slaves /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
-COPY conf/yarn-site.xml /usr/local/hadoop-$HADOOP_VERSION/etc/hadoop
-
-# hbase/conf
-COPY conf/hbase-site.xml /usr/local/hbase-$HBASE_VERSION/conf
-COPY conf/regionservers /usr/local/hbase-$HBASE_VERSION/conf
-COPY conf/backup-masters /usr/local/hbase-$HBASE_VERSION/conf
-#COPY conf/core-site.xml /usr/local/hbase-$HBASE_VERSION/conf
-#COPY conf/hdfs-site.xml /usr/local/hbase-$HBASE_VERSION/conf
-
 # hive/conf
-COPY conf/hive-site.xml /usr/local/hive-$HIVE_VERSION/conf
+COPY hive/hive-site.xml /usr/local/hive-$HIVE_VERSION/conf
+
+# spark
+ADD soft/spark-$SPARK_VERSION-bin-hadoop2.7.tgz /usr/local
+RUN mv /usr/local/spark-$SPARK_VERSION-bin-hadoop2.7 /usr/local/spark-$SPARK_VERSION
+COPY soft/postgresql-9.4.1212.jar /usr/local/spark-$SPARK_VERSION/jars
+RUN echo "export SPARK_HOME=\"/usr/local/spark-$SPARK_VERSION\"" >> /root/.bashrc
+# spark-env.sh
+RUN echo "export JAVA_HOME=\"/usr/local/jdk\"" >> /usr/local/spark-$SPARK_VERSION/conf/spark-env.sh
+RUN echo "export SCALA_HOME=\"/usr/local/scala\"" >> /usr/local/spark-$SPARK_VERSION/conf/spark-env.sh
+RUN echo "export HADOOP_HOME=\"/usr/local/hadoop-$HADOOP_VERSION\"" >> /usr/local/spark-$SPARK_VERSION/conf/spark-env.sh
+RUN echo "export HADOOP_CONF_DIR=\"/usr/local/hadoop-$HADOOP_VERSION/etc/hadoop\"" >> /usr/local/spark-$SPARK_VERSION/conf/spark-env.sh
+RUN echo "export SPARK_HOME=\"/usr/local/spark-$SPARK_VERSION\"" >> /usr/local/spark-$SPARK_VERSION/conf/spark-env.sh
+RUN echo "export SPARK_DAEMON_JAVA_OPTS=\"-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=zoo1.hadoop:2181,zoo2.hadoop:2181,zoo3.hadoop:2181 -Dspark.deploy.zookeeper.dir=/spark\"" >> /usr/local/spark-$SPARK_VERSION/conf/spark-env.sh
+# spark/conf
+RUN echo "spark.eventLog.enabled true" >> /usr/local/spark-$SPARK_VERSION/conf/spark-defaults.conf
+RUN echo "spark.eventLog.dir hdfs://hdfscluster/spark/event/logs" >> /usr/local/spark-$SPARK_VERSION/conf/spark-defaults.conf
+RUN echo "spark.history.fs.logDirectory hdfs://hdfscluster/spark/history/logs" >> /usr/local/spark-$SPARK_VERSION/conf/spark-defaults.conf
+COPY spark/slaves /usr/local/spark-$SPARK_VERSION/conf
+COPY spark/hive-site.xml /usr/local/spark-$SPARK_VERSION/conf
+
+# path
+RUN echo "PATH=\"\$JAVA_HOME/bin:\$SCALA_HOME/bin:\$HADOOP_HOME/sbin:\$HADOOP_HOME/bin:\$HBASE_HOME/bin:\$HIVE_HOME/bin:\$SPARK_HOME/sbin:\$SPARK_HOME/bin:\$PATH\"" >> /root/.bashrc

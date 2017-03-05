@@ -9,6 +9,11 @@ docker run\
 	-p "$NN1_PORT":"$NN1_PORT"\
 	-p "$RN1_PORT":"$RN1_PORT"\
 	-p "$HM1_PORT":"$HM1_PORT"\
+	-p "$SM1_PORT":"$SM1_PORT"\
+	-p "$ST1_PORT":"$ST1_PORT"\
+	-p "$SW1_PORT":"$SW1_PORT"\
+	-p "$SH1_PORT":"$SH1_PORT"\
 	-v "$JAVA_HOME":"/usr/local/jdk"\
+	-v "$SCALA_HOME":"/usr/local/scala"\
 	$DOCKER_ADD_HOST\
 	-it main-hadoop

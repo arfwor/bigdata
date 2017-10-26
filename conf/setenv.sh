@@ -9,7 +9,7 @@ ZOO_VERSION="3.4.9"
 HADOOP_VERSION="2.7.3"
 HBASE_VERSION="1.2.4"
 #HIVE_VERSION="2.1.1"
-# spark thriftserver 对接只能 1.x 版本
+# spark thriftserver 对接只能 1.x 版本 metastore
 HIVE_VERSION="1.2.1"
 SPARK_VERSION="2.1.0"
 
